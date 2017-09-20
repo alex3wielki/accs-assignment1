@@ -38,6 +38,7 @@ function renderLeftElement(game) {
       <p class="email-desc">${game.desc}</p>
     </div>
   </div>`
+  return snippet;
 };
 function renderContent(game) {
   let snippet = `
@@ -55,8 +56,28 @@ function renderContent(game) {
       </div>
     </div>
 
-    <div class="email-content-body">
-      ${game.link}
+    <div style="height: 100%;" class="email-content-body">
+      <iframe src="${game.link}"
+        width="720px" height="450px"
+        frameborder="0"
+        webkitallowfullscreen="true"
+        mozallowfullscreen="true"
+        allowfullscreen>
+      </iframe>
     </div>
   </div>`
+  return snippet;
 };
+
+document.addEventListener('DOMContentLoaded',()=>{
+  let leftItems = games.map(game=>(renderLeftElement(game))).join('');
+  document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend',leftItems);
+  
+  // let content = renderContent(games[0]);
+  let content = Array.from(games.map(game=>renderContent(game)));
+  document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend',content[0]);
+  // We land on the first game in the array
+
+  // document.querySelectorAll()
+}
+);
