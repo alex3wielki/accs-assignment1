@@ -1,1 +1,62 @@
 console.log('works');
+let games = [
+  {
+    'publisher' : 'Namco',
+    'avatar' : 'https://archive.org/services/img/msdos_Pac-Man_1983',
+    'title' : 'Pac-Man',
+    'desc' : 'Pac-Man stars a little, yellow dot-muncher who works his way around to clear a maze of the dots.',
+    'publishedDate' : '1983',
+    'link' : 'https://archive.org/embed/msdos_Pac-Man_1983'
+  },
+
+  {
+    'publisher' : 'Broderbund',
+    'avatar' : 'https://archive.org/services/img/msdos_Where_in_the_World_is_Carmen_Sandiego_1985',
+    'title' : 'Where in the World is Carmen Sandiego',
+    'desc' : 'Capture the thief that stole the artifact using clues dealing with your knowledge of geography.',
+    'publishedDate' : '1985',
+    'link' : 'https://archive.org/embed/msdos_Where_in_the_World_is_Carmen_Sandiego_1985'
+  },
+  {
+    'publisher' : 'Ingenuity',
+    'avatar' : 'https://archive.org/services/img/msdos_Crosscountry_Canada_1991',
+    'title' : 'Crosscountry Canada',
+    'desc' : 'Drive an 18-wheel truck picking up and delivering a variety of commodities with typed-in commands.',
+    'publishedDate' : '1991',
+    'link' : 'https://archive.org/embed/msdos_Crosscountry_Canada_1991'
+  }
+];
+function renderLeftElement(game) {
+  let snippet = `
+  <div class="email-item email-item-selected pure-g">
+    <div class="pure-u">
+      <img alt="${game.title}'s avatar" class="email-avatar" src="${game.avatar}" width="64" height="64">
+    </div>
+    <div class="pure-u-3-4">
+      <h5 class="email-name">${game.publisher} ${game.publishedDate}</h5>
+      <h4 class="email-subject">${game.title}</h4>
+      <p class="email-desc">${game.desc}</p>
+    </div>
+  </div>`
+};
+function renderContent(game) {
+  let snippet = `
+  <div class="email-content">
+    <div class="email-content-header pure-g">
+      <div class="pure-u-1-2">
+        <h1 class="email-content-title">${game.title}</h1>
+        <p class="email-content-subtitle">Published by: ${game.publisher} ${game.publishedDate}</p>
+      </div>
+
+      <div class="email-content-controls pure-u-1-2">
+        <button class="secondary-button pure-button">Delete</button>
+        <button class="secondary-button pure-button">Archive</button>
+        <button class="secondary-button pure-button">Unread</button>
+      </div>
+    </div>
+
+    <div class="email-content-body">
+      ${game.link}
+    </div>
+  </div>`
+};
