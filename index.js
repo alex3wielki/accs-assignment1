@@ -69,9 +69,20 @@ function renderContentSnippet(game) {
   return snippet;
 };
 
-function renderRightContent(x) {
+function renderRightContent(snippet) {
   document.querySelector('.rightSidebar').innerHtml = '';
-  document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', x);
+  document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', snippet);
+}
+
+let elementSelected = { id: 0 };
+
+function removeClass(leftElems, prevElem) {
+  leftElems[prevElem.id].classList.remove('email-item-selected');
+}
+
+function setClass(leftElems, currElem) {
+  leftElems[currElem].classList.add('email-item-selected');
+  return currElem;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -83,15 +94,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // We land on the first game in the array
 
   let leftElements = Array.from(document.querySelectorAll('.email-item'));
-  console.log(leftElements);
+  // console.log(leftElements);
 
   for (let i = 0; i < leftElements.length; i++) {
     leftElements[i].addEventListener('click', () => {
-      //Uncheck the last one, check the new one.
-      for (let j = 0; j < leftElements.length; j++) {
-        leftElements[j].classList.remove('email-item-selected');
-      }
-      leftElements[i].classList.add('email-item-selected');
+      removeClass(leftElements, elementSelected);
+      elementSelected.id = setClass(leftElements, i);
+      // Can't believe this actually works... Recurrsion is beautiful
+
     })
   }
 });
+
+
+/*
+for (let i = 0; i < leftElements.length; i++) {
+  leftElements[i].addEventListener('click', () => {
+    //Uncheck the last one, check the new one.
+    for (let j = 0; j < leftElements.length; j++) {
+      leftElements[j].classList.remove('email-item-selected');
+    }
+    leftElements[i].classList.add('email-item-selected');
+  })
+}
+*/
