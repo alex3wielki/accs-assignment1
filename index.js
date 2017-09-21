@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let leftElements = Array.from(document.querySelectorAll('.email-item'));
   // console.log(leftElements);
+  elementSelected.id = setClass(leftElements, 0);
 
   for (let i = 0; i < leftElements.length; i++) {
     leftElements[i].addEventListener('click', () => {
