@@ -77,7 +77,9 @@ function renderContentSnippet(game) {
   </div>`
   return snippet;
 }
+function renderForm(){
 
+}
 function remove(id) {
   let elem = document.querySelector(id);
   return elem.parentNode.removeChild(elem);
@@ -98,6 +100,44 @@ function setClass(leftElems, currElem) {
   return currElem;
 }
 
+let form = `
+<div class="email-content" style="width:90%;margin: auto; margin-top: 20px;">
+  <form class="form-horizontal">
+    <div class="form-group row">
+      <label class="col-md-3" for='publisher'>Publisher</label>
+      <input class="col-md-9" type="text" id="publisher">
+    </div>
+
+    <div class="form-group row">
+      <label class="col-md-3" for='avatar'>Avatar link</label>
+      <input class="col-md-9" type="text" id="avatar">
+    </div>
+
+    <div class="form-group row">
+      <label class="col-md-3" for="title">Title</label>
+      <input class="col-md-9" type="text" id="title">
+    </div>
+
+    <div class="form-group row">
+      <label class="col-md-3" for='desc'>Description</label>
+      <textarea class="col-md-9" id="desc" cols="30" rows="5"></textarea>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-md-3" for='publishedDate'>Published date:</label>
+      <input class="col-md-9" type="date" id="publishedDate">
+    </div>
+
+    <div class="form-group row">
+      <label class="col-md-3" for='link'>Link</label>
+      <input class="col-md-9" type="text" id="link">
+    </div>
+    <div class="row">
+      <button type="submit" class="col-md-offset-3 btn btn-default">Add to library</button>
+    </div>
+  </form>
+</div>
+`;
 document.addEventListener('DOMContentLoaded', () => {
   let leftItems = games.map(game => (renderLeftElement(game))).join('');
   document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend', leftItems);
@@ -113,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < leftElements.length; i++) {
     leftElements[i].addEventListener('click', () => {
       remove('.email-content');
+      console.log(i);
       renderRightContent(rightContent[i]);
 
       removeClass(leftElements, elementSelected.id);
@@ -122,6 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+let addNewItemButton = document.querySelector('#addNewItem');
+addNewItemButton.addEventListener('click',()=>{
+  remove('.email-content');
+  document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', form);
+})
 
 
 /*

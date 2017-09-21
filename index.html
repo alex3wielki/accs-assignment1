@@ -14,22 +14,20 @@
         <![endif]-->
   <!--[if gt IE 8]><!-->
   <link rel="stylesheet" href="index_files/1.css">
-  <style>
-    input,
-    textarea,
-    button {
-      background: black;
-      color: white;
-    }
-    button{
-      display: block;
-      margin-top: 5px;
-    }
-  </style>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
   <!--<![endif]-->
   <!--[if lt IE 9]>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
     <![endif]-->
+  <style>
+    form {
+      width: 50%;
+    }
+
+    label {
+      font-size: 100%;
+    }
+  </style>
 </head>
 
 <body>
@@ -38,7 +36,7 @@
       <a href="#" class="nav-menu-button">Menu</a>
 
       <div class="nav-inner">
-        <button class="primary-button pure-button">Compose</button>
+        <button id="addNewItem" class="primary-button pure-button">Add new item</button>
 
         <div class="pure-menu">
           <ul class="pure-menu-list">
@@ -61,27 +59,7 @@
     </div>
 
     <div id="main" style="width:70%;" class="rightSidebar pure-u-1">
-      <form>
-        <legend for='publisher'>Publisher</legend>
-        <input type="text" id="publisher">
-
-        <legend for='avatar'>Avatar link</legend>
-        <input type="text" id="avatar">
-
-        <legend for="title">Title</legend>
-        <input type="text" id="title">
-
-        <legend for='desc'>Description</legend>
-        <textarea id="desc" cols="30" rows="5"></textarea>
-
-        <legend for='publishedDate'>Published date:</legend>
-        <input type="date" id="publishedDate">
-
-        <legend for='link'>Link</legend>
-        <input type="text" id="link">
-
-        <button type="submit">Add to library</button>
-      </form>
+      
     </div>
   </div>
   <script src="./index.js"></script>
