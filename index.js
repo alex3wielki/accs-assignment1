@@ -30,12 +30,17 @@ function renderLeftElement(game) {
   let snippet = `
   <div class="email-item pure-g">
     <div class="pure-u">
-      <img alt="${game.title}'s avatar" class="email-avatar" src="${game.avatar}" width="64" height="64">
+      <img alt="${game.title == '' || game.title == undefined || game.title == null ? '' : game.title + "'s avatar"}"
+        class="email-avatar" src="${game.avatar == '' || game.avatar == undefined || game.avatar == null ? '' : game.avatar}"
+        width="64" height="64">
     </div>
     <div class="pure-u-3-4">
-      <h5 class="email-name">${game.publisher} ${game.publishedDate}</h5>
-      <h4 class="email-subject">${game.title}</h4>
-      <p class="email-desc">${game.desc}</p>
+      <h5 class="email-name">
+        ${game.publisher == '' || game.publisher == undefined || game.publisher == null ? '' : game.publisher} 
+        ${game.publishedDate == '' || game.publishedDate == undefined || game.publishedDate == null ? '' : game.publishedDate}
+      </h5>
+      <h4 class="email-subject">${game.title == '' || game.title == undefined || game.title == null ? '' : game.title}</h4>
+      <p class="email-desc">${game.desc == '' || game.desc == undefined || game.desc == null ? '' : game.desc}</p>
     </div>
   </div>`
   return snippet;
@@ -46,8 +51,11 @@ function renderContentSnippet(game) {
   <div class="email-content">
     <div class="email-content-header pure-g">
       <div class="pure-u-1-2">
-        <h1 class="email-content-title">${game.title}</h1>
-        <p class="email-content-subtitle">Published by: ${game.publisher} ${game.publishedDate}</p>
+        <h1 class="email-content-title">${game.title == '' || game.title == undefined || game.title == null ? '' : game.title}</h1>
+        <p class="email-content-subtitle">
+            ${game.publisher == '' || game.publisher == undefined || game.publisher == null ? '' : 'Published by:' + game.publisher} 
+            ${game.publishedDate == '' || game.publishedDate == undefined || game.publishedDate == null ? '' : game.publishedDate}
+        </p>
       </div>
 
       <div class="email-content-controls pure-u-1-2">
@@ -58,7 +66,7 @@ function renderContentSnippet(game) {
     </div>
 
     <div style="height: 100%;" class="email-content-body">
-      <iframe src="${game.link}"
+      <iframe src="${game.link == '' || game.link == undefined || game.link == null ? '' : game.link}"
         width="720px" height="450px"
         frameborder="0"
         webkitallowfullscreen="true"
