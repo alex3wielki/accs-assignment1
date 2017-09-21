@@ -1,34 +1,34 @@
 console.log('works');
 let games = [
   {
-    'publisher' : 'Namco',
-    'avatar' : 'https://archive.org/services/img/msdos_Pac-Man_1983',
-    'title' : 'Pac-Man',
-    'desc' : 'Pac-Man stars a little, yellow dot-muncher who works his way around to clear a maze of the dots.',
-    'publishedDate' : '1983',
-    'link' : 'https://archive.org/embed/msdos_Pac-Man_1983'
+    'publisher': 'Namco',
+    'avatar': 'https://archive.org/services/img/msdos_Pac-Man_1983',
+    'title': 'Pac-Man',
+    'desc': 'Pac-Man stars a little, yellow dot-muncher who works his way around to clear a maze of the dots.',
+    'publishedDate': '1983',
+    'link': 'https://archive.org/embed/msdos_Pac-Man_1983'
   },
 
   {
-    'publisher' : 'Broderbund',
-    'avatar' : 'https://archive.org/services/img/msdos_Where_in_the_World_is_Carmen_Sandiego_1985',
-    'title' : 'Where in the World is Carmen Sandiego',
-    'desc' : 'Capture the thief that stole the artifact using clues dealing with your knowledge of geography.',
-    'publishedDate' : '1985',
-    'link' : 'https://archive.org/embed/msdos_Where_in_the_World_is_Carmen_Sandiego_1985'
+    'publisher': 'Broderbund',
+    'avatar': 'https://archive.org/services/img/msdos_Where_in_the_World_is_Carmen_Sandiego_1985',
+    'title': 'Where in the World is Carmen Sandiego',
+    'desc': 'Capture the thief that stole the artifact using clues dealing with your knowledge of geography.',
+    'publishedDate': '1985',
+    'link': 'https://archive.org/embed/msdos_Where_in_the_World_is_Carmen_Sandiego_1985'
   },
   {
-    'publisher' : 'Ingenuity',
-    'avatar' : 'https://archive.org/services/img/msdos_Crosscountry_Canada_1991',
-    'title' : 'Crosscountry Canada',
-    'desc' : 'Drive an 18-wheel truck picking up and delivering a variety of commodities with typed-in commands.',
-    'publishedDate' : '1991',
-    'link' : 'https://archive.org/embed/msdos_Crosscountry_Canada_1991'
+    'publisher': 'Ingenuity',
+    'avatar': 'https://archive.org/services/img/msdos_Crosscountry_Canada_1991',
+    'title': 'Crosscountry Canada',
+    'desc': 'Drive an 18-wheel truck picking up and delivering a variety of commodities with typed-in commands.',
+    'publishedDate': '1991',
+    'link': 'https://archive.org/embed/msdos_Crosscountry_Canada_1991'
   }
 ];
 function renderLeftElement(game) {
   let snippet = `
-  <div class="email-item email-item-selected pure-g">
+  <div class="email-item pure-g">
     <div class="pure-u">
       <img alt="${game.title}'s avatar" class="email-avatar" src="${game.avatar}" width="64" height="64">
     </div>
@@ -40,7 +40,7 @@ function renderLeftElement(game) {
   </div>`
   return snippet;
 };
-function renderContent(game) {
+function renderContentSnippet(game) {
   let snippet = `
   <div class="email-content">
     <div class="email-content-header pure-g">
@@ -69,15 +69,29 @@ function renderContent(game) {
   return snippet;
 };
 
-document.addEventListener('DOMContentLoaded',()=>{
-  let leftItems = games.map(game=>(renderLeftElement(game))).join('');
-  document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend',leftItems);
-  
-  // let content = renderContent(games[0]);
-  let content = Array.from(games.map(game=>renderContent(game)));
-  document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend',content[0]);
+function renderRightContent(x) {
+  document.querySelector('.rightSidebar').innerHtml = '';
+  document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', x);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  let leftItems = games.map(game => (renderLeftElement(game))).join('');
+  document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend', leftItems);
+
+  let rightContent = Array.from(games.map(game => renderContentSnippet(game)));
+  renderRightContent(rightContent[0]);
   // We land on the first game in the array
 
-  // document.querySelectorAll()
-}
-);
+  let leftElements = Array.from(document.querySelectorAll('.email-item'));
+  console.log(leftElements);
+
+  for (let i = 0; i < leftElements.length; i++) {
+    leftElements[i].addEventListener('click', () => {
+      //Uncheck the last one, check the new one.
+      for (let j = 0; j < leftElements.length; j++) {
+        leftElements[j].classList.remove('email-item-selected');
+      }
+      leftElements[i].classList.add('email-item-selected');
+    })
+  }
+});
