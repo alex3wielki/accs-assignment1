@@ -8,7 +8,6 @@ let games = [
     'publishedDate': '1983',
     'link': 'https://archive.org/embed/msdos_Pac-Man_1983'
   },
-
   {
     'publisher': 'Broderbund',
     'avatar': 'https://archive.org/services/img/msdos_Where_in_the_World_is_Carmen_Sandiego_1985',
@@ -25,7 +24,7 @@ let games = [
     'publishedDate': '1991',
     'link': 'https://archive.org/embed/msdos_Crosscountry_Canada_1991'
   }
-];
+]
 
 function renderLeftElement(game) {
   let snippet = `
@@ -40,7 +39,7 @@ function renderLeftElement(game) {
     </div>
   </div>`
   return snippet;
-};
+}
 
 function renderContentSnippet(game) {
   let snippet = `
@@ -69,7 +68,7 @@ function renderContentSnippet(game) {
     </div>
   </div>`
   return snippet;
-};
+}
 
 function remove(id) {
   let elem = document.querySelector(id);
@@ -83,7 +82,7 @@ function renderRightContent(snippet) {
 let elementSelected = { id: 0 };
 
 function removeClass(leftElems, prevElem) {
-  leftElems[prevElem.id].classList.remove('email-item-selected');
+  leftElems[prevElem].classList.remove('email-item-selected');
 }
 
 function setClass(leftElems, currElem) {
@@ -107,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     leftElements[i].addEventListener('click', () => {
       remove('.email-content');
       renderRightContent(rightContent[i]);
-      removeClass(leftElements, elementSelected);
+
+      removeClass(leftElements, elementSelected.id);
       elementSelected.id = setClass(leftElements, i);
       // Can't believe this actually works... Recurrsion is beautiful
     })
