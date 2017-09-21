@@ -26,6 +26,7 @@ let games = [
     'link': 'https://archive.org/embed/msdos_Crosscountry_Canada_1991'
   }
 ];
+
 function renderLeftElement(game) {
   let snippet = `
   <div class="email-item pure-g">
@@ -40,6 +41,7 @@ function renderLeftElement(game) {
   </div>`
   return snippet;
 };
+
 function renderContentSnippet(game) {
   let snippet = `
   <div class="email-content">
@@ -69,8 +71,12 @@ function renderContentSnippet(game) {
   return snippet;
 };
 
+function remove(id) {
+  let elem = document.querySelector(id);
+  return elem.parentNode.removeChild(elem);
+}
+
 function renderRightContent(snippet) {
-  document.querySelector('.rightSidebar').innerHtml = '';
   document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', snippet);
 }
 
@@ -98,13 +104,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   for (let i = 0; i < leftElements.length; i++) {
     leftElements[i].addEventListener('click', () => {
+      remove('.email-content');
+      renderRightContent(rightContent[i]);
       removeClass(leftElements, elementSelected);
       elementSelected.id = setClass(leftElements, i);
       // Can't believe this actually works... Recurrsion is beautiful
-
     })
   }
 });
+
 
 
 /*
