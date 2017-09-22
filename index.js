@@ -77,9 +77,7 @@ function renderContentSnippet(game) {
   </div>`
   return snippet;
 }
-function renderForm(){
 
-}
 function remove(id) {
   let elem = document.querySelector(id);
   return elem.parentNode.removeChild(elem);
