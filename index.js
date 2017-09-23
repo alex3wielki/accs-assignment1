@@ -98,73 +98,98 @@ function setClass(leftElems, currElem) {
   return currElem;
 }
 
-let form = `
-<div class="email-content" style="width:90%;margin: auto; margin-top: 20px;">
-  <form class="form-horizontal">
-    <div class="form-group row">
-      <label class="col-md-3" for='publisher'>Publisher</label>
-      <input class="col-md-9" type="text" id="publisher">
-    </div>
-
-    <div class="form-group row">
-      <label class="col-md-3" for='avatar'>Avatar link</label>
-      <input class="col-md-9" type="text" id="avatar">
-    </div>
-
-    <div class="form-group row">
-      <label class="col-md-3" for="title">Title</label>
-      <input class="col-md-9" type="text" id="title">
-    </div>
-
-    <div class="form-group row">
-      <label class="col-md-3" for='desc'>Description</label>
-      <textarea class="col-md-9" id="desc" cols="30" rows="5"></textarea>
-    </div>
-
-    <div class="form-group row">
-      <label class="col-md-3" for='publishedDate'>Published date:</label>
-      <input class="col-md-9" type="date" id="publishedDate">
-    </div>
-
-    <div class="form-group row">
-      <label class="col-md-3" for='link'>Link</label>
-      <input class="col-md-9" type="text" id="link">
-    </div>
-    <div class="row">
-      <button type="submit" class="col-md-offset-3 btn btn-default">Add to library</button>
-    </div>
-  </form>
-</div>
-`;
-document.addEventListener('DOMContentLoaded', () => {
-  let leftItems = games.map(game => (renderLeftElement(game))).join('');
-  document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend', leftItems);
-
-  let rightContent = Array.from(games.map(game => renderContentSnippet(game)));
-  renderRightContent(rightContent[0]);
-  // We land on the first game in the array
-
-  let leftElements = Array.from(document.querySelectorAll('.email-item'));
-  // console.log(leftElements);
-  elementSelected.id = setClass(leftElements, 0);
-
+function resetEventListeners(leftElements,rightContent){
   for (let i = 0; i < leftElements.length; i++) {
     leftElements[i].addEventListener('click', () => {
       remove('.email-content');
-      console.log(i);
       renderRightContent(rightContent[i]);
-
       removeClass(leftElements, elementSelected.id);
       elementSelected.id = setClass(leftElements, i);
       // Can't believe this actually works... Recurrsion is beautiful
     })
   }
+}
+
+function renderLeftContent() {
+  let leftItems = games.map(game => (renderLeftElement(game))).join('');
+  document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend', leftItems);
+}
+
+let form = `
+  <div class="email-content" style="width:90%;margin: auto; margin-top: 20px;">
+    <form class="form-horizontal">
+      <div class="form-group row">
+        <label class="col-md-4" for='publisher'>Publisher</label>
+        <input class="col-md-8" type="text" id="publisher">
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4" for='avatar'>Avatar link</label>
+        <input class="col-md-8" type="text" id="avatar">
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4" for="title">Title</label>
+        <input class="col-md-8" type="text" id="title">
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4" for='desc'>Description</label>
+        <input class="col-md-8" type="text" id="desc">
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4" for='publishedDate'>Published date:</label>
+        <input class="col-md-8" type="date" id="publishedDate">
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4" for='link'>Link</label>
+        <input class="col-md-8" type="text" id="link">
+      </div>
+      <div class="row">
+        <button type="submit" id="submit-button" class="col-md-offset-3 btn btn-default">Add to library</button>
+      </div>
+    </form>
+  </div>
+`;
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderLeftContent();
+  let rightContent = Array.from(games.map(game => renderContentSnippet(game)));
+  renderRightContent(rightContent[0]);
+  // We land on the first game in the array
+  let leftElements = Array.from(document.querySelectorAll('.email-item'));
+  // console.log(leftElements);
+  elementSelected.id = setClass(leftElements, 0);
+  resetEventListeners(leftElements,rightContent);
 });
 
 let addNewItemButton = document.querySelector('#addNewItem');
-addNewItemButton.addEventListener('click',()=>{
+addNewItemButton.addEventListener('click', () => {
   remove('.email-content');
   document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', form);
+  let submitButton = document.querySelector('#submit-button');
+  submitButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    let input = Array.from(document.querySelectorAll('input'));
+    games.unshift(
+      {
+        publisher: input[0],
+        avatar: [1],
+        title: input[2],
+        desc: input[3],
+        publishedDate: input[4],
+        link: input[5]
+      });
+    let leftElements = Array.from(document.querySelectorAll('.email-item'));
+    for (let i = 0; i < leftElements.length; i++) {
+      remove('.email-item');
+    }
+    renderLeftContent();
+    resetEventListeners(leftElements);
+  })
 })
 
 
