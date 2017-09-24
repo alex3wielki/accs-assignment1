@@ -53,7 +53,7 @@ function renderContentSnippet(game) {
       <div class="pure-u-1-2">
         <h1 class="email-content-title">${game.title == '' || game.title == undefined || game.title == null ? '' : game.title}</h1>
         <p class="email-content-subtitle">
-            ${game.publisher == '' || game.publisher == undefined || game.publisher == null ? '' : 'Published by:' + game.publisher} 
+            ${game.publisher == '' || game.publisher == undefined || game.publisher == null ? '' : 'Published by: ' + game.publisher} 
             ${game.publishedDate == '' || game.publishedDate == undefined || game.publishedDate == null ? '' : game.publishedDate}
         </p>
       </div>
@@ -174,21 +174,23 @@ addNewItemButton.addEventListener('click', () => {
   submitButton.addEventListener('click', (e) => {
     e.preventDefault();
     let input = Array.from(document.querySelectorAll('input'));
+    console.log(input[0].value);
     games.unshift(
       {
-        publisher: input[0],
-        avatar: [1],
-        title: input[2],
-        desc: input[3],
-        publishedDate: input[4],
-        link: input[5]
+        publisher: input[0].value,
+        avatar: [1].value,
+        title: input[2].value,
+        desc: input[3].value,
+        publishedDate: input[4].value,
+        link: input[5].value  
       });
     let leftElements = Array.from(document.querySelectorAll('.email-item'));
     for (let i = 0; i < leftElements.length; i++) {
       remove('.email-item');
     }
     renderLeftContent();
-    resetEventListeners(leftElements);
+    let rightContent = Array.from(games.map(game => renderContentSnippet(game)));
+    resetEventListeners(leftElements,rightContent);
   })
 })
 
