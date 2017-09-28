@@ -1,6 +1,9 @@
+/**
+ * localStorage.setItem('name',JSON.stringify(object));
+ * JSON.parse(localStorage.getItem('name'));
+ */
 console.log('works');
-let games = [
-  {
+let games = [{
     'publisher': 'Namco',
     'avatar': 'https://archive.org/services/img/msdos_Pac-Man_1983',
     'title': 'Pac-Man',
@@ -26,7 +29,7 @@ let games = [
   }
 ]
 
-function renderLeftElement(game) {
+function renderMenuElement(game) {
   let snippet = `
   <div class="email-item pure-g">
     <div class="pure-u">
@@ -78,7 +81,7 @@ function renderContentSnippet(game) {
   return snippet;
 }
 
-function remove(id) {
+function removeElement(id) {
   let elem = document.querySelector(id);
   return elem.parentNode.removeChild(elem);
 }
@@ -87,7 +90,6 @@ function renderRightContent(snippet) {
   document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', snippet);
 }
 
-let elementSelected = { id: 0 };
 
 function removeClass(leftElems, prevElem) {
   leftElems[prevElem].classList.remove('email-item-selected');
@@ -98,22 +100,47 @@ function setClass(leftElems, currElem) {
   return currElem;
 }
 
-function resetEventListeners(leftElements,rightContent){
+let elementSelected = {
+  id: 0
+};
+
+function setEventListeners(leftElements, rightContent) {
   for (let i = 0; i < leftElements.length; i++) {
+    console.log('test');
     leftElements[i].addEventListener('click', () => {
-      remove('.email-content');
+      removeElement('.email-content');
       renderRightContent(rightContent[i]);
       removeClass(leftElements, elementSelected.id);
       elementSelected.id = setClass(leftElements, i);
-      // Can't believe this actually works... Recurrsion is beautiful
+      // Can't believe this actually works... Recurrsion is beautiful this is my JS version of pointers
     })
   }
 }
 
 function renderLeftContent() {
-  let leftItems = games.map(game => (renderLeftElement(game))).join('');
+  let leftItems = games.map(game => (renderMenuElement(game))).join('');
   document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend', leftItems);
 }
+
+function addNewGameFromInputs() {
+  let input = Array.from(document.querySelectorAll('input'));
+  console.log(input[0].value);
+  games.unshift({
+    publisher: input[0].value,
+    avatar: [1].value,
+    title: input[2].value,
+    desc: input[3].value,
+    publishedDate: input[4].value,
+    link: input[5].value
+  });
+}
+
+// function removeLeftElements() {
+//   let leftElements = Array.from(document.querySelectorAll('.email-item'));
+//   for (let i = 0; i < leftElements.length; i++) {
+//     removeElement('.email-item');
+//   }
+// }
 
 let form = `
   <div class="email-content" style="width:90%;margin: auto; margin-top: 20px;">
@@ -163,34 +190,26 @@ document.addEventListener('DOMContentLoaded', () => {
   let leftElements = Array.from(document.querySelectorAll('.email-item'));
   // console.log(leftElements);
   elementSelected.id = setClass(leftElements, 0);
-  resetEventListeners(leftElements,rightContent);
+  setEventListeners(leftElements, rightContent);
 });
 
 let addNewItemButton = document.querySelector('#addNewItem');
 addNewItemButton.addEventListener('click', () => {
-  remove('.email-content');
+  removeElement('.email-content');
   document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', form);
   let submitButton = document.querySelector('#submit-button');
   submitButton.addEventListener('click', (e) => {
     e.preventDefault();
-    let input = Array.from(document.querySelectorAll('input'));
-    console.log(input[0].value);
-    games.unshift(
-      {
-        publisher: input[0].value,
-        avatar: [1].value,
-        title: input[2].value,
-        desc: input[3].value,
-        publishedDate: input[4].value,
-        link: input[5].value  
-      });
+    addNewGameFromInputs();
+    // renderLeftContent();
+    let leftList = document.querySelector('#list');
+    console.log(leftList);
+    leftList.insertAdjacentHTML('afterbegin', renderMenuElement(games[0]));
+    // renderLeftContent();
     let leftElements = Array.from(document.querySelectorAll('.email-item'));
-    for (let i = 0; i < leftElements.length; i++) {
-      remove('.email-item');
-    }
-    renderLeftContent();
-    let rightContent = Array.from(games.map(game => renderContentSnippet(game)));
-    resetEventListeners(leftElements,rightContent);
+    leftElements[0].addEventListener('click', () => {
+      console.log('clicked')
+    });
   })
 })
 
@@ -200,7 +219,7 @@ for (let i = 0; i < leftElements.length; i++) {
   leftElements[i].addEventListener('click', () => {
     //Uncheck the last one, check the new one.
     for (let j = 0; j < leftElements.length; j++) {
-      leftElements[j].classList.remove('email-item-selected');
+      leftElements[j].classList.removeElement('email-item-selected');
     }
     leftElements[i].classList.add('email-item-selected');
   })
