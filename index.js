@@ -29,7 +29,7 @@ let games = [{
   }
 ]
 
-function renderMenuElement(game) {
+function createMenuSnippet(game) {
   let snippet = `
   <div class="email-item pure-g">
     <div class="pure-u">
@@ -49,7 +49,7 @@ function renderMenuElement(game) {
   return snippet;
 }
 
-function renderContentSnippet(game) {
+function createContentSnippet(game) {
   let snippet = `
   <div class="email-content">
     <div class="email-content-header pure-g">
@@ -86,7 +86,7 @@ function removeElement(id) {
   return elem.parentNode.removeChild(elem);
 }
 
-function renderRightContent(snippet) {
+function renderContent(snippet) {
   document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', snippet);
 }
 
@@ -109,7 +109,7 @@ function setEventListeners(leftElements, rightContent) {
     console.log('test');
     leftElements[i].addEventListener('click', () => {
       removeElement('.email-content');
-      renderRightContent(rightContent[i]);
+      renderContent(rightContent[i]);
       removeClass(leftElements, elementSelected.id);
       elementSelected.id = setClass(leftElements, i);
       // Can't believe this actually works... Recurrsion is beautiful this is my JS version of pointers
@@ -117,8 +117,8 @@ function setEventListeners(leftElements, rightContent) {
   }
 }
 
-function renderLeftContent() {
-  let leftItems = games.map(game => (renderMenuElement(game))).join('');
+function renderMenuContent() {
+  let leftItems = games.map(game => (createMenuSnippet(game))).join('');
   document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend', leftItems);
 }
 
@@ -183,9 +183,9 @@ let form = `
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderLeftContent();
-  let rightContent = Array.from(games.map(game => renderContentSnippet(game)));
-  renderRightContent(rightContent[0]);
+  renderMenuContent();
+  let rightContent = Array.from(games.map(game => createContentSnippet(game)));
+  renderContent(rightContent[0]);
   // We land on the first game in the array
   let leftElements = Array.from(document.querySelectorAll('.email-item'));
   // console.log(leftElements);
@@ -201,11 +201,11 @@ addNewItemButton.addEventListener('click', () => {
   submitButton.addEventListener('click', (e) => {
     e.preventDefault();
     addNewGameFromInputs();
-    // renderLeftContent();
+    // renderMenuContent();
     let leftList = document.querySelector('#list');
     console.log(leftList);
-    leftList.insertAdjacentHTML('afterbegin', renderMenuElement(games[0]));
-    // renderLeftContent();
+    leftList.insertAdjacentHTML('afterbegin', createMenuSnippet(games[0]));
+    // renderMenuContent();
     let leftElements = Array.from(document.querySelectorAll('.email-item'));
     leftElements[0].addEventListener('click', () => {
       console.log('clicked')
