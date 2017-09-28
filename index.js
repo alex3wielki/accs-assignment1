@@ -86,7 +86,7 @@ function removeElement(id) {
   return elem.parentNode.removeChild(elem);
 }
 
-function renderContent(snippet) {
+function renderGameContent(snippet) {
   document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', snippet);
 }
 
@@ -106,10 +106,9 @@ let elementSelected = {
 
 function setEventListeners(leftElements, rightContent) {
   for (let i = 0; i < leftElements.length; i++) {
-    console.log('test');
     leftElements[i].addEventListener('click', () => {
       removeElement('.email-content');
-      renderContent(rightContent[i]);
+      renderGameContent(rightContent[i]);
       removeClass(leftElements, elementSelected.id);
       elementSelected.id = setClass(leftElements, i);
       // Can't believe this actually works... Recurrsion is beautiful this is my JS version of pointers
@@ -132,6 +131,16 @@ function addNewGameFromInputs() {
     desc: input[3].value,
     publishedDate: input[4].value,
     link: input[5].value
+  });
+}
+
+function addGameToMenu() {
+  let leftList = document.querySelector('#list');
+  leftList.insertAdjacentHTML('afterbegin', createMenuSnippet(games[0]));
+  let addedOption = document.querySelector('.email-item');
+  addedOption.classList.add('email-item-unread');
+  addedOption.addEventListener('click', () => {
+    addedOption.classList.remove('email-item-unread')
   });
 }
 
@@ -181,17 +190,22 @@ let form = `
   </div>
 `;
 
-
+function renderFirstGame() {
+  let rightContent = Array.from(games.map(game => createContentSnippet(game)));
+  renderGameContent(rightContent[0]);
+}
 document.addEventListener('DOMContentLoaded', () => {
   renderMenuContent();
-  let rightContent = Array.from(games.map(game => createContentSnippet(game)));
-  renderContent(rightContent[0]);
   // We land on the first game in the array
+  renderFirstGame()
   let leftElements = Array.from(document.querySelectorAll('.email-item'));
   // console.log(leftElements);
   elementSelected.id = setClass(leftElements, 0);
+  let rightContent = Array.from(games.map(game => createContentSnippet(game)));
   setEventListeners(leftElements, rightContent);
 });
+
+
 
 let addNewItemButton = document.querySelector('#addNewItem');
 addNewItemButton.addEventListener('click', () => {
@@ -201,14 +215,13 @@ addNewItemButton.addEventListener('click', () => {
   submitButton.addEventListener('click', (e) => {
     e.preventDefault();
     addNewGameFromInputs();
-    // renderMenuContent();
-    let leftList = document.querySelector('#list');
-    console.log(leftList);
-    leftList.insertAdjacentHTML('afterbegin', createMenuSnippet(games[0]));
-    // renderMenuContent();
+    addGameToMenu();
     let leftElements = Array.from(document.querySelectorAll('.email-item'));
     leftElements[0].addEventListener('click', () => {
-      console.log('clicked')
+      removeElement('.email-content');
+      renderFirstGame();
+      let leftElements = Array.from(document.querySelectorAll('.email-item'));
+      //Make selected color work after adding new elements
     });
   })
 })
