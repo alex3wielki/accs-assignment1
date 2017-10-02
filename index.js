@@ -194,6 +194,7 @@ function renderFirstGame() {
   let rightContent = Array.from(games.map(game => createContentSnippet(game)));
   renderGameContent(rightContent[0]);
 }
+
 document.addEventListener('DOMContentLoaded', () => {
   renderMenuContent();
   // We land on the first game in the array
@@ -218,6 +219,7 @@ addNewItemButton.addEventListener('click', () => {
     addGameToMenu();
     let leftElements = Array.from(document.querySelectorAll('.email-item'));
     leftElements[0].addEventListener('click', () => {
+      console.log('this');
       removeElement('.email-content');
       renderFirstGame();
       let leftElements = Array.from(document.querySelectorAll('.email-item'));
