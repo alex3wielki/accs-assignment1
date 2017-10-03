@@ -9,28 +9,34 @@ let pointers = {
 };
 
 let games = [{
+    'id': 0,
     'publisher': 'Namco',
     'avatar': 'https://archive.org/services/img/msdos_Pac-Man_1983',
     'title': 'Pac-Man',
     'desc': 'Pac-Man stars a little, yellow dot-muncher who works his way around to clear a maze of the dots.',
     'publishedDate': '1983',
-    'link': 'https://archive.org/embed/msdos_Pac-Man_1983'
+    'link': 'https://archive.org/embed/msdos_Pac-Man_1983',
+    'isTrashed': false
   },
   {
+    'id': 1,
     'publisher': 'Broderbund',
     'avatar': 'https://archive.org/services/img/msdos_Where_in_the_World_is_Carmen_Sandiego_1985',
     'title': 'Where in the World is Carmen Sandiego',
     'desc': 'Capture the thief that stole the artifact using clues dealing with your knowledge of geography.',
     'publishedDate': '1985',
-    'link': 'https://archive.org/embed/msdos_Where_in_the_World_is_Carmen_Sandiego_1985'
+    'link': 'https://archive.org/embed/msdos_Where_in_the_World_is_Carmen_Sandiego_1985',
+    'isTrashed': false
   },
   {
+    'id': 2,
     'publisher': 'Ingenuity',
     'avatar': 'https://archive.org/services/img/msdos_Crosscountry_Canada_1991',
     'title': 'Crosscountry Canada',
     'desc': 'Drive an 18-wheel truck picking up and delivering a variety of commodities with typed-in commands.',
     'publishedDate': '1991',
-    'link': 'https://archive.org/embed/msdos_Crosscountry_Canada_1991'
+    'link': 'https://archive.org/embed/msdos_Crosscountry_Canada_1991',
+    'isTrashed': true
   }
 ]
 
@@ -72,18 +78,13 @@ let form = `
     </form>
   </div>
 `;
-/**
- * End of global variables
- */
-
-
 
 /**
  * Beginnig of snippet forging
  */
 function createMenuSnippet(game) {
   return `
-    <div class="email-item pure-g">
+    <div class="email-item pure-g" data-id="${game.id}">
       <div class="pure-u">
         <img alt="${game.title == '' || game.title == undefined || game.title == null ? '' : game.title + "'s avatar"}"
           class="email-avatar" src="${game.avatar == '' || game.avatar == undefined || game.avatar == null ? '' : game.avatar}"
@@ -102,7 +103,7 @@ function createMenuSnippet(game) {
 
 function createContentSnippet(game) {
   return `
-    <div class="email-content">
+    <div class="email-content" data-id="${game.id}">
       <div class="email-content-header pure-g">
         <div class="pure-u-1-2">
           <h1 class="email-content-title">${game.title == '' || game.title == undefined || game.title == null ? '' : game.title}</h1>
@@ -113,9 +114,9 @@ function createContentSnippet(game) {
         </div>
 
         <div class="email-content-controls pure-u-1-2">
-          <button class="secondary-button pure-button">delete</button>
-          <button class="secondary-button pure-button">archive</button>
-          <button class="secondary-button pure-button">unread</button>
+          <button id="delete-button" class="secondary-button pure-button">delete</button>
+          <button id="move-to-trash-button" class="secondary-button pure-button">trash</button>
+          <button id="set-unread-button" class="secondary-button pure-button">unread</button>
         </div>
       </div>
 
@@ -130,13 +131,6 @@ function createContentSnippet(game) {
       </div>
     </div>`;
 }
-/**
- * end of snippet forging
- */
-
-
-
-
 
 /**
  * Rendering content
@@ -150,19 +144,30 @@ function renderGame(index) {
   renderGameContent(rightContent[index]);
 }
 
-function renderMenuContent() {
-  let leftItems = games.map(game => (createMenuSnippet(game))).join('');
-  document.querySelector('.leftSidebar').insertAdjacentHTML('beforeend', leftItems);
+function renderInboxMenuContent() {
+  let notTrashedGames = games.filter((game) => (game.isTrashed === false))
+  let leftItems = notTrashedGames.map(game => createMenuSnippet(game)).join('');
+  document.querySelector('.leftSidebar').innerHTML = leftItems;
+  return notTrashedGames.length;
 }
 
-function renderGameToMenu(snippet, gameContent) {
+function renderTrashMenuContent() {
+  let trashedGames = games.filter((game) => (game.isTrashed === true))
+  let leftItems = trashedGames.map(game => createMenuSnippet(game)).join('');
+  document.querySelector('.leftSidebar').innerHTML = leftItems;
+  return trashedGames.length;
+}
+
+function renderGameToMenu(snippet, gameIndex) {
   let leftList = document.querySelector('#list');
   leftList.insertAdjacentHTML('afterbegin', snippet);
   let addedGame = document.querySelector('.email-item');
   addedGame.classList.add('email-item-unread');
   addedGame.addEventListener('click', () => {
     addedGame.classList.remove('email-item-unread');
-    toggleGameContent(gameContent);
+    // pointers.current_selection = gameIndex;
+    // toggleItemSelectedClass();
+    toggleGameContent(gameIndex);
   });
 }
 
@@ -191,35 +196,79 @@ function removeElement(id) {
  */
 function addNewGameFromInputs() {
   let input = Array.from(document.querySelectorAll('input'));
-  console.log(input[0].value);
   games.push({
+    id: games.length,
     publisher: input[0].value,
     avatar: [1].value,
     title: input[2].value,
     desc: input[3].value,
     publishedDate: input[4].value,
-    link: input[5].value
+    link: input[5].value,
+    isTrashed: false
   });
 }
+
 /**
- * End of content 
+ * Updates game count in the inbox field
  */
+function updateGameCount(howManyNotTrashedGames, howManyTrashedGames) {
+  let label = document.querySelector('.email-count');
+  label.textContent = (`(${howManyNotTrashedGames})`);
+  label = document.querySelector('#trash-button .email-count');
+  label.textContent = (`(${howManyTrashedGames})`);
+}
 
 
+/**
+ * This function toggles the 'email-item-selected' class using 'pointers' I guess I could have used any global variables
+ * 
+ */
+function toggleItemSelectedClass() {
+  pointers.previous_selection = pointers.current_selection;
+  let menuElements = Array.from(document.querySelectorAll('.email-item'));
+  let desiredClass = 'email-item-selected';
+  menuElements[pointers.previous_selection].classList.remove(desiredClass);
+  menuElements[pointers.current_selection].classList.add(desiredClass);
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderMenuContent();
-  // We land on the first game in the array
-  renderGame(0);
-  // This calls renderGameContent(index);
-  // console.log(leftElements);
+/**
+ * This function lets us fix the event listeners and sort of reset them
+ */
+function fixEventListeners() {
   let menuContent = Array.from(document.querySelectorAll('.email-item'));
-  console.log(menuContent);
+  // console.log(menuContent);
   for (let i = 0; i < menuContent.length; i++) {
     menuContent[i].addEventListener('click', () => {
       toggleGameContent(i);
+      pointers.current_selection = games[i].id;
+      console.log(games[i].id);
+      // toggleItemSelectedClass();
     })
   }
+  document.querySelector('.email-item').classList.add('email-item-selected');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  let notTrashedGames = renderInboxMenuContent();
+  // We land on the first game in the array
+  renderGame(0);
+  let trashedGames = games.filter((game) => (game.isTrashed === true));
+  updateGameCount(notTrashedGames, trashedGames.length);
+  // This calls renderGameContent(index);
+  // console.log(leftElements);
+  fixEventListeners();
+
+  let inboxButton = document.getElementById('inbox-button');
+  inboxButton.addEventListener('click', () => {
+    renderInboxMenuContent();
+    fixEventListeners();
+  });
+
+  let trashButton = document.getElementById('trash-button');
+  trashButton.addEventListener('click', () => {
+    renderTrashMenuContent();
+    fixEventListeners();
+  });
 
   let addNewItemButton = document.querySelector('#addNewItem');
   addNewItemButton.addEventListener('click', () => {
@@ -232,7 +281,12 @@ document.addEventListener('DOMContentLoaded', () => {
       let currentGameIndex = games.length - 1; //Array starts from 0... Sometimes this makes no God damn sense
       let snippet = createMenuSnippet(games[currentGameIndex]);
       let snippetContent = createContentSnippet(games[currentGameIndex]);
-      renderGameToMenu(snippet, snippetContent);
+      renderGameToMenu(snippet, currentGameIndex);
+      updateGameCount();
+
+      let notTrashedGames = games.filter((game) => (game.isTrashed === false))
+      let trashedGames = games.filter((game) => (game.isTrashed === true));
+      updateGameCount(notTrashedGames.length, trashedGames.length);
     })
   })
 });
