@@ -140,8 +140,9 @@ function renderGameContent(snippet) {
 }
 
 function renderGame(index) {
-  let rightContent = Array.from(games.map(game => createContentSnippet(game)));
-  renderGameContent(rightContent[index]);
+  // let rightContent = Array.from(games.map(game => createContentSnippet(game[index])));
+  let rightContent = createContentSnippet(games[index])
+  renderGameContent(rightContent);
 }
 
 function renderInboxMenuContent() {
@@ -197,7 +198,7 @@ function removeElement(id) {
 function addNewGameFromInputs() {
   let input = Array.from(document.querySelectorAll('input'));
   games.push({
-    id: games.length,
+    id: games.length - 1,
     publisher: input[0].value,
     avatar: [1].value,
     title: input[2].value,
@@ -210,6 +211,7 @@ function addNewGameFromInputs() {
 
 /**
  * Updates game count in the inbox field
+ * Not trashed go first`
  */
 function updateGameCount(howManyNotTrashedGames, howManyTrashedGames) {
   let label = document.querySelector('.email-count');
@@ -248,6 +250,24 @@ function fixEventListeners() {
   document.querySelector('.email-item').classList.add('email-item-selected');
 }
 
+
+/**
+ * Counts the number of trashed and not trashed games
+ * @returns Array
+ */
+function countGames() {
+  let trashedGames = games.filter((game) => (game.isTrashed === true));
+  let notTrashedGames = games.filter((game) => (game.isTrashed === false));
+  // return [trashedGames, notTrashedGames];
+  return {
+    'trashedGames': trashedGames.length,
+    'notTrashedgames': notTrashedGames.length
+  }
+}
+
+/**
+ * Actual code running
+ */
 document.addEventListener('DOMContentLoaded', () => {
   let notTrashedGames = renderInboxMenuContent();
   // We land on the first game in the array
@@ -274,19 +294,19 @@ document.addEventListener('DOMContentLoaded', () => {
   addNewItemButton.addEventListener('click', () => {
     removeElement('.email-content');
     document.querySelector('.rightSidebar').insertAdjacentHTML('beforeend', form);
+
     let submitButton = document.querySelector('#submit-button');
     submitButton.addEventListener('click', (e) => {
       e.preventDefault();
       addNewGameFromInputs();
       let currentGameIndex = games.length - 1; //Array starts from 0... Sometimes this makes no God damn sense
-      let snippet = createMenuSnippet(games[currentGameIndex]);
+      let menuSnippet = createMenuSnippet(games[currentGameIndex]);
       let snippetContent = createContentSnippet(games[currentGameIndex]);
-      renderGameToMenu(snippet, currentGameIndex);
-      updateGameCount();
-
-      let notTrashedGames = games.filter((game) => (game.isTrashed === false))
-      let trashedGames = games.filter((game) => (game.isTrashed === true));
-      updateGameCount(notTrashedGames.length, trashedGames.length);
+      renderGameToMenu(menuSnippet, currentGameIndex);
+      fixEventListeners();
+      let gamesCount = countGames();
+      updateGameCount(gamesCount.notTrashedgames, gamesCount.trashedGames);
+      //  updateGameCount(gamesCount[1].length, gamesCount[0].length); //1 is not trashed, 0 is trashed
     })
   })
 });
